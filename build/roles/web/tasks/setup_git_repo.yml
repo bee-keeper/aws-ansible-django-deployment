@@ -1,0 +1,8 @@
+---
+
+- name: Setup/pull the Git repo
+  git: repo={{ git_repo }} dest={{ git_root }} update=yes accept_hostkey=yes
+  when: setup_git_repo
+  tags: 
+    - git 
+    - deploy

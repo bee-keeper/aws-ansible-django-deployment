@@ -1,0 +1,41 @@
+---
+
+- name: Create a RDS instance
+  rds: >
+      command=create
+      instance_name={{ db_name }}
+      username={{ db_user }}
+      password={{ db_password }}
+      db_name={{ db_name }}
+      aws_access_key="{{ lookup('env','AWS_ACCESS_KEY') }}"
+      aws_secret_key="{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+      zone="{{ aws_zone }}"
+      region="{{ aws_region }}"
+      vpc_security_groups="{{ rds_vpc_security_groups }}"
+      subnet="{{ rds_subnet_group }}"
+      port="{{ rds_port }}"
+      db_engine=postgres
+      instance_type="{{ rds_instance }}"
+      size="{{ rds_size }}"
+      wait=yes
+      wait_timeout=600
+  when: create_rds    
+  register: rds_info
+  tags: rds
+
+- name: Checking RDS endpoint status
+  when: create_rds
+  debug: msg="Endpoint:{{rds_info.instance.endpoint}}"
+  tags: rds
+
+- name: Install Postgres client components
+  apt: name={{ item }} update_cache={{ update_apt_cache }} state=installed
+  with_items:
+    - libpq-dev
+    - python-psycopg2
+    - postgresql-client-common
+    - postgresql-client-9.3
+  tags: 
+    - packages
+    - rds
+

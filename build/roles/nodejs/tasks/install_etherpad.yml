@@ -1,0 +1,48 @@
+---
+  - name: Clone etherpadlite repository to webapps lib
+    git: repo=https://github.com/ether/etherpad-lite.git dest="{{ virtualenv_path }}/lib/etherpad-lite" update=yes
+    tags: etherpad_config
+
+  - name: Update permissions for etherpad-lite directory
+    file: path="{{ virtualenv_path }}/lib/etherpad-lite/"
+        recurse=yes
+        owner=nodejs-ether
+        group=nodejs
+        state=directory
+    tags: etherpad_config
+
+  - name: Copy template
+    template: src=etherpad-lite.conf.j2 dest=/etc/init/etherpad-lite.conf backup=yes mode=0644
+    tags: etherpad_config
+
+  - name: Configure etherpad-lite
+    template: src=settings.json.j2 dest="{{ virtualenv_path }}/lib/etherpad-lite/settings.json" mode=0644
+    tags: etherpad_config
+
+  - name: Start Etherpad Lite on Node
+    service: name=etherpad-lite state=started
+    tags: etherpad_config
+
+  - name: Wait for key to become available
+    wait_for: path={{ virtualenv_path }}/lib/etherpad-lite/APIKEY.txt delay=15
+    tags: etherpad_config
+
+  - name: Read key into a variable
+    slurp: src={{ virtualenv_path }}/lib/etherpad-lite/APIKEY.txt
+    register: etherpad_key
+    tags: etherpad_config
+
+  - name: Append API key to bin/postactivate
+    lineinfile:
+      dest="{{ virtualenv_path }}/bin/postactivate"
+      line="export ETHERPAD_KEY={{ etherpad_key.content | b64decode | trim }}"
+      owner=ed
+      state=present
+      insertafter=EOF
+    tags: etherpad_config
+
+  - name: Source bin/postactivate  
+    shell: . {{ virtualenv_path }}/bin/postactivate
+    tags: etherpad_config
+    notify:
+      - Restart etherpad-lite

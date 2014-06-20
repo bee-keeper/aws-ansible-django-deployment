@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "Exporting Ansible specific variables"
+
+echo "Exporting environment variables for AWS"
+export AWS_ACCESS_KEY=''
+export AWS_SECRET_ACCESS_KEY=''
+export AWS_KEYPAIR_NAME=''
+export AWS_KEY_PATH=''
+export AWS_SSH_USER=''
+
+echo "Exporting local database variables"
+export DB_NAME=''
+export DB_USER=''
+export DB_PASSWORD=''
+export DB_HOST=''

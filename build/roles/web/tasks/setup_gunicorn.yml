@@ -1,0 +1,12 @@
+---
+
+- name: Install Gunicorn
+  pip: name=gunicorn virtualenv={{ virtualenv_path }}
+
+- name: Create the Gunicorn script file
+  template: src=gunicorn_start.j2
+            dest={{ virtualenv_path }}/bin/gunicorn_start
+            owner={{ gunicorn_user }}
+            group={{ gunicorn_group }}
+            mode=0755
+            backup=yes

@@ -1,0 +1,27 @@
+description "etherpad-lite"
+
+start on started networking
+stop on runlevel [!2345]
+
+env EPHOME="{{ virtualenv_path }}/lib/etherpad-lite"
+env EPLOGS="{{ application_log_dir }}"
+env EPUSER=nodejs-ether
+
+respawn
+
+pre-start script
+    cd $EPHOME
+    mkdir $EPLOGS                              ||true
+    chown $EPUSER:admin $EPLOGS                ||true
+    chmod 0755 $EPLOGS                         ||true
+    chown -R $EPUSER:admin $EPHOME/var         ||true
+    $EPHOME/bin/installDeps.sh >> $EPLOGS/error.log || { stop; exit 1; }
+end script
+
+script
+  cd $EPHOME/
+  exec su -s /bin/sh -c 'exec "$0" "$@"' $EPUSER -- bin/run.sh \
+                        >> $EPLOGS/etherpad-lite.access.log \
+                        2>> $EPLOGS/etherpad-lite.error.log
+  exec su -s /bin/sh                       
+end script

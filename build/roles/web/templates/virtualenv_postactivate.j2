@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export DJANGO_SECRET_KEY='{{ django_secret_key }}'
+export DB_NAME='{{ db_name }}'
+export DB_USER='{{ db_user }}'
+export DB_PASSWORD='{{ db_password }}'
+{% if db_host != '' %}
+export DB_HOST='{{ db_host }}'
+{% elif create_rds %}
+export DB_HOST='{{ rds_info.instance.endpoint }}'
+{% else %} 
+export DB_HOST=''
+{% endif %}

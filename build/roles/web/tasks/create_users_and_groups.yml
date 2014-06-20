@@ -1,0 +1,10 @@
+---
+
+- name: Create the application user
+  user: name={{ application_user }} password={{ application_user_password_hash }} state=present
+
+- name: Create the application group
+  group: name={{ gunicorn_group }} system=yes state=present
+
+- name: Add the application user to the application group
+  user: name={{ gunicorn_user }} group={{ gunicorn_group }} state=present

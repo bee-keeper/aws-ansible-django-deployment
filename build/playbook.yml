@@ -1,0 +1,83 @@
+---
+
+- name: Create {{ application_name }} with Vagrant/Ansible
+  hosts: all
+  gather_facts: no
+  sudo: yes
+  sudo_user: root
+  remote_user: ubuntu
+
+  vars:
+    #top level vars
+    - application_user: ''
+    - application_user_password_hash: ''
+    - application_group: ''
+    - application_name: ''
+    - update_apt_cache: yes
+    #DB
+    - create_rds: no
+    - db_name: ''
+    - db_user: ''
+    - db_password: ''
+    - db_host: ''
+    - postgresql_version: 9.3
+    #RDS
+    - aws_zone: ''
+    - aws_region: ''
+    - rds_vpc_security_groups: ''
+    - rds_subnet_group: ''
+    - rds_port: '5432'
+    - rds_instance: 'db.t1.micro'
+    - rds_size: '5'
+    #Web
+    - virtualenv_path: '/webapps/{{ application_name }}' #/webapps/example-app
+    - git_root: '{{ virtualenv_path }}/{{ application_name }}' #/webapps/example/example/example
+    - django_dir: '{{ git_root }}/{{ application_name }}' #/webapps/example-app/example/example/example
+    - application_log_dir: '{{ virtualenv_path }}/logs'
+    - application_log_file: '{{ application_log_dir }}/gunicorn_supervisor.log'
+    - requirements_file: '{{ git_root }}/requirements.txt'
+    #(Web) Gunicorn
+    - gunicorn_user: "{{ application_user }}"
+    - gunicorn_group: webapps
+    - gunicorn_num_workers: 1
+    - gunicorn_max_requests: 0
+    #(Web) Django
+    - django_settings_file: '{{ application_name }}.live_settings'
+    - django_secret_key: ''
+    - run_django_syncdb: yes
+    - run_django_south_migration: yes
+    - run_django_collectstatic: yes
+    #(Web) Git
+    - setup_git_repo: yes
+    - git_repo: ''
+    #(Web) Node
+    - install_node: no
+    #(Web) Nginx
+    - nginx_server_name: localhost
+    - nginx_http_port: 80
+    - nginx_https_port: 443
+    - nginx_access_log_file: "{{ application_log_dir }}/nginx_access.log"
+    - nginx_error_log_file: "{{ application_log_dir }}/nginx_error.log"
+    - nginx_static_dir: "{{ git_root }}/static/"
+    - nginx_media_dir: "{{ git_root }}/media/"
+    #Memcached
+    - install_memcached: no
+    - memcached_listen: 127.0.0.1
+    - memcached_port: 11211
+    - memcached_user: nobody
+    - memcached_max_memory_mb: 64
+    - memcached_max_connections: 1024
+
+  #vars_files:
+  #  - group_vars/dbservers
+  #  - group_vars/webservers
+  #  - group_vars/memcachedservers
+  #  - group_vars/nodeservers
+
+  roles:
+    - base
+    - { role: rds, when: create_rds }
+    - { role: db, when: not create_rds }
+    - { role: nodejs, when: install_node }
+    - web
+    - { role: memcached, when: install_memcached }

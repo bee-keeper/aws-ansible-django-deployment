@@ -1,0 +1,14 @@
+---
+
+  - name: Install node.js
+    apt: pkg=nodejs state=present update_cache={{ update_apt_cache }}
+    apt: pkg=npm state=present update_cache={{ update_apt_cache }}
+
+  - name: Symlink /usr/bin/nodejs to /usr/bin/node
+    action: file src=/usr/bin/nodejs dest=/usr/bin/node state=link
+
+  - name: Ensure nodejs group exists
+    group: name=nodejs state=present system=yes
+
+  - name: Ensure nodejs-ether user exists
+    user: name=nodejs-ether group=nodejs createhome=no shell=/bin/false system=yes state=present
