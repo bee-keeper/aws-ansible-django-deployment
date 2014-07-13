@@ -37,5 +37,4 @@
 
 - name: Install boto
   pip: name=boto
-  when: create_rds
   tags: packages
