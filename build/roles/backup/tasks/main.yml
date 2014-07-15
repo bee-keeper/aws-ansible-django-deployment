@@ -25,5 +25,5 @@
   tags: backup
 
 - name: Add makesnapshots to daily cron job
-  cron: name='Backup' user={{ application_user }} hour="1" job="{{ virtualenv_path }}/aws-backups/makesnapshots.py day"
+  cron: name='Backup' user={{ application_user }} minute="0" hour="1" job="{{ virtualenv_path }}/aws-backups/makesnapshots.py day"
   tags: backup
