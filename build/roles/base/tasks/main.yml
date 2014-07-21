@@ -27,7 +27,7 @@
     - libfreetype6 
     - libfreetype6-dev 
     - zlib1g-dev
-    tags: packages
+  tags: packages
 
 - name: Install virtualenv
   pip: name={{ item }}
