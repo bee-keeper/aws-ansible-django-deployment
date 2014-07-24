@@ -1,7 +1,7 @@
 ---
 
 - name: Create the application user
-  user: name={{ application_user }} password={{ application_user_password_hash }} state=present
+  user: name={{ application_user }} password={{ application_user_password_hash }} state=present shell="/bash/bin"
 
 - name: Create the application group
   group: name={{ gunicorn_group }} system=yes state=present
