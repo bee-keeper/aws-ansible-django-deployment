@@ -32,5 +32,7 @@ exec /webapps/{{ application_name }}/bin/gunicorn ${DJANGO_WSGI_MODULE}:applicat
         --name $NAME \
         --workers $NUM_WORKERS \
         --user=$USER --group=$GROUP \
-        --log-level=debug \
+        --log-level=warn \
+        --log-file={{ application_log_dir }}/gunicorn-error.log \
+        --access-logfile={{ application_log_dir }}/gunicorn-access.log \
         --bind=unix:$SOCKFILE
