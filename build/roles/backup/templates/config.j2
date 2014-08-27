@@ -21,12 +21,6 @@ config = {
     'keep_month': 2,
 
     # Path to the log for this script
-    'log_file':  "{{ application_log_dir }}/makesnapshots.log",
+    'log_file':  "{{ application_log_dir }}/backups/{{ application_name }}-snapshots.log",
 
-    # ARN of the SNS topic (optional)
-    #'arn': 'xxxxxxxxxx',
-
-    # Proxy config (optional)
-    #'proxyHost': '10.100.x.y',
-    #'proxyPort': '8080'
 }

@@ -1,12 +1,25 @@
 ---
 
-- name: Install Gunicorn
+- name: Gunicorn | Install Gunicorn
   pip: name=gunicorn virtualenv={{ virtualenv_path }}
 
-- name: Create the Gunicorn script file
+- name: Gunicorn | Create a directory for logs
+  file: path={{ application_log_dir }}/gunicorn
+        owner={{ application_user }}
+        mode=0600
+        state=directory
+
+- name: Gunicorn | Create the Gunicorn script file
   template: src=gunicorn_start.j2
             dest={{ virtualenv_path }}/bin/gunicorn_start
             owner={{ gunicorn_user }}
             group={{ gunicorn_group }}
             mode=0755
             backup=yes
+
+- name: Gunicorn | Initialise log rotation for Gunicorn
+  template: src=gunicorn_log.j2
+            dest='/etc/logrotate.d/{{ application_name }}-gunicorn.log'
+            owner=root
+            group=root
+            mode=0644

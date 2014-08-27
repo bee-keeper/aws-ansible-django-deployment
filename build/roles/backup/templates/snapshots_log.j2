@@ -1,0 +1,9 @@
+{{ application_log_dir }}/backups/*.log {
+    monthly
+    missingok
+    rotate 2
+    compress
+    delaycompress
+    notifempty
+    create 0640 {{ application_user }} {{ application_group }}
+}

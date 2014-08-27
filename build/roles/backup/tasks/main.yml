@@ -1,21 +1,28 @@
 ---
 
 #Snapshot backup entire EC2 instance
-- name: Create a directory to store backup scripts
+- name: Backups | Create a directory to store backup scripts
   file: path={{ virtualenv_path }}/aws-backups
         owner={{ application_user }}
         mode=0700
         state=directory
   tags: backup
 
-- name: Get a copy of aws-snapshot-tool script
+- name: Backups | Create a directory for logs
+  file: path={{ application_log_dir }}/backups
+        owner={{ application_user }}
+        mode=0600
+        state=directory
+  tags: backup
+
+- name: Backups | Get a copy of aws-snapshot-tool script
   get_url: url=https://github.com/evannuil/aws-snapshot-tool/raw/master/makesnapshots.py 
            dest={{ virtualenv_path }}/aws-backups
            owner={{ application_user }}
            mode=0700
   tags: backup
 
-- name: Create aws-snapshot-tool template
+- name: Backups | Create aws-snapshot-tool template
   template: src=config.j2
             dest={{ virtualenv_path }}/aws-backups/config.py
             owner={{ application_user }}
@@ -24,14 +31,22 @@
             backup=yes
   tags: backup
 
-- name: Add daily cron job for makesnapshots
+- name: Backups | Add daily cron job for makesnapshots
   cron: name='Daily Backup' user={{ application_user }} minute='0' hour='1' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py day'
   tags: backup
 
-- name: Add weekly cron job for makesnapshots
+- name: Backups | Add weekly cron job for makesnapshots
   cron: name='Weekly Backup' user={{ application_user }} minute='0' hour='1' weekday='6' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py week'
   tags: backup
 
-- name: Add monthly cron job for makesnapshots
+- name: Backups | Add monthly cron job for makesnapshots
   cron: name='Monthly Backup' user={{ application_user }} minute='0' hour='1' day='1' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py month'
+  tags: backup
+
+- name: Backups | Initialise log rotation for backups
+  template: src=snapshots_log.j2
+            dest='/etc/logrotate.d/{{ application_name }}-snapshots.log'
+            owner=root
+            group=root
+            mode=0644
   tags: backup
