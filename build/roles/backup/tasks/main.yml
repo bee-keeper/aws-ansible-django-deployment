@@ -24,14 +24,14 @@
             backup=yes
   tags: backup
 
-- name: Add makesnapshots to daily cron job
+- name: Add daily cron job for makesnapshots
   cron: name='Daily Backup' user={{ application_user }} minute='0' hour='1' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py day'
   tags: backup
 
-- name: Add weekly makesnapshots to cron
+- name: Add weekly cron job for makesnapshots
   cron: name='Weekly Backup' user={{ application_user }} minute='0' hour='1' weekday='6' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py week'
   tags: backup
 
-- name: Add monthly makesnapshots to cron
+- name: Add monthly cron job for makesnapshots
   cron: name='Monthly Backup' user={{ application_user }} minute='0' hour='1' day='1' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py month'
   tags: backup
