@@ -81,7 +81,6 @@
   #  - group_vars/backup
 
   roles:
-    - base
     - { role: rds, when: create_rds }
     - { role: db, when: not create_rds }
     - { role: nodejs, when: install_node }
