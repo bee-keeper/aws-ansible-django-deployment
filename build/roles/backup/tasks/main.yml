@@ -25,5 +25,13 @@
   tags: backup
 
 - name: Add makesnapshots to daily cron job
-  cron: name='Backup' user={{ application_user }} minute="0" hour="1" job="{{ virtualenv_path }}/aws-backups/makesnapshots.py day"
+  cron: name='Daily Backup' user={{ application_user }} minute='0' hour='1' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py day'
+  tags: backup
+
+- name: Add weekly makesnapshots to cron
+  cron: name='Weekly Backup' user={{ application_user }} minute='0' hour='1' weekday='6' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py week'
+  tags: backup
+
+- name: Add monthly makesnapshots to cron
+  cron: name='Monthly Backup' user={{ application_user }} minute='0' hour='1' day='1' job='{{ virtualenv_path }}/aws-backups/makesnapshots.py month'
   tags: backup
