@@ -1,36 +1,36 @@
 ---
 
-- name: Nginx | Install Nginx
+- name: Install Nginx
   apt: name=nginx update_cache={{ update_apt_cache }} state=installed
   tags: packages
 
-- name: Nginx | Ensure that the Nginx service is stopped
+- name: Ensure that the Nginx service is stopped
   service: name=nginx state=stopped
 
-- name: Nginx | Create a directory for nginx logs
+- name: Create a directory for nginx logs
   file: path={{ application_log_dir }}/nginx
         owner={{ application_user }}
-        mode=0600
+        mode=0700
         state=directory
 
-- name: Nginx | Create the Nginx configuration file
+- name: Create the Nginx configuration file
   template: src=nginx_site_config.j2
             dest=/etc/nginx/sites-available/{{ application_name }}
             backup=yes
 
-- name: Nginx | Ensure that the default site is disabled
+- name: Ensure that the default site is disabled
   command: rm /etc/nginx/sites-enabled/default
            removes=/etc/nginx/sites-enabled/default
 
-- name: Nginx | Ensure that the application site is enabled
+- name: Ensure that the application site is enabled
   command: ln -s /etc/nginx/sites-available/{{ application_name }}
            /etc/nginx/sites-enabled/{{ application_name }}
            creates=/etc/nginx/sites-enabled/{{ application_name }}
 
-- name: Nginx | Ensure Nginx service is started
+- name: Ensure Nginx service is started
   service: name=nginx state=started enabled=yes
 
-- name: Nginx | Initialise log rotation for nginx
+- name: Initialise log rotation for nginx
   template: src=nginx_log.j2
             dest='/etc/logrotate.d/{{ application_name }}-nginx.log'
             owner=root

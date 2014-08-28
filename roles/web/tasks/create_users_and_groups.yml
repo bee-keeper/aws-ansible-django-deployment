@@ -1,10 +1,10 @@
 ---
 
 - name: Create the application user
-  user: name={{ application_user }} password={{ application_user_password_hash }} state=present shell="/bash/bin"
+  user: name={{ application_user }} password={{ application_user_password_hash }} state=present shell="/bin/bash"
 
 - name: Create the application group
-  group: name={{ gunicorn_group }} system=yes state=present
+  group: name={{ application_group }} system=yes state=present
 
 - name: Add the application user to the application group
-  user: name={{ gunicorn_user }} group={{ gunicorn_group }} state=present
+  user: name={{ application_user }} group={{ application_group }} state=present
