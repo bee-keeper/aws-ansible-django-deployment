@@ -11,7 +11,7 @@
 - name: Backups | Create a directory for logs
   file: path={{ application_log_dir }}/backups
         owner={{ application_user }}
-        mode=0600
+        mode=0700
         state=directory
   tags: backup
 
