@@ -22,13 +22,13 @@
     - db_host: ''
     - postgresql_version: 9.3
     #RDS
-    - aws_zone: ''
-    - aws_region: ''
-    - rds_vpc_security_groups: ''
-    - rds_subnet_group: ''
-    - rds_port: '5432'
-    - rds_instance: 'db.t1.micro'
-    - rds_size: '5'
+    #- aws_zone: ''
+    #- aws_region: ''
+    #- rds_vpc_security_groups: ''
+    #- rds_subnet_group: ''
+    #- rds_port: '5432'
+    #- rds_instance: 'db.t1.micro'
+    #- rds_size: '5'
     #Web
     - virtualenv_path: '/webapps/{{ application_name }}'
     - git_root: '{{ virtualenv_path }}/{{ application_name }}'
@@ -80,8 +80,8 @@
   #  - group_vars/backup
 
   roles:
-    - { role: rds, when: create_rds }
+    #- { role: rds, when: create_rds }
     - { role: db, when: not create_rds }
-    - { role: nodejs, when: install_node }
+    #- { role: nodejs, when: install_node }
     - web
     - { role: memcached, when: install_memcached }
