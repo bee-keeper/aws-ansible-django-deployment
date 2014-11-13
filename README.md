@@ -19,6 +19,10 @@ The workflow is as so:
 5. Configure logging (uses logroate)
 6. Configure backups (uses [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool))
 
+
+Just a note - this is still under production and could still use some security improvements and other tweaks.    
+
+
 ##Project configuration
 
 Start by opening the 'playbook.yml' file and providing values for all the variables listed under 'vars'.  The application will be deployed and owned by 'application_user'.  You'll need to provide their password hash by running the following command:

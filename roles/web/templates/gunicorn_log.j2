@@ -5,7 +5,7 @@
     compress
     delaycompress
     notifempty
-    create 0640 nobody nogroup
+    create 0640 {{ application_user }} {{ application_group }}
     sharedscripts
  
     postrotate
