@@ -1,4 +1,4 @@
-upstream wsgi_server {
+upstream wsgi_server_{{ application_name }} {
   # fail_timeout=0 means we always retry an upstream even if it failed
   # to return a good HTTP response (in case the Unicorn master nukes a
   # single worker for timing out).
@@ -6,9 +6,16 @@ upstream wsgi_server {
   server unix:{{ virtualenv_path }}/run/gunicorn.sock fail_timeout=0;
 }
 
+# Redirect from www.
+#server {
+#    listen 80;
+#    server_name www.{{ nginx_server_name }};
+#    return 301 http://{{ nginx_server_name }}$request_uri;
+#}
+
 server {
     listen      80;
-    server_name localhost;
+    server_name {{ nginx_server_name }};
 
     client_max_body_size 4G;
 
@@ -55,7 +62,7 @@ server {
         # Try to serve static files from nginx, no point in making an
         # *application* server like Unicorn/Rainbows! serve static files.
     
-        proxy_pass http://wsgi_server;    
+        proxy_pass http://wsgi_server_{{ application_name }};    
         
     }
 
