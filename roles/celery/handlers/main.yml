@@ -1,0 +1,4 @@
+---
+
+- name: restart {{ application_name }}-celery
+  supervisorctl: name={{ application_name }}-celery state=restarted

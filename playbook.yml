@@ -54,13 +54,13 @@
     #Nodejs
     - install_node: no
     #RDS
-    - aws_zone:
-    - aws_region:
-    - rds_vpc_security_groups:
-    - rds_subnet_group: 
-    - rds_port: 5432
-    - rds_instance: db.t1.micro
-    - rds_size: 5
+    - aws_zone: ''
+    - aws_region: ''
+    - rds_vpc_security_groups: ''
+    - rds_subnet_group: ''
+    - rds_port: ''
+    - rds_instance: ''
+    - rds_size: ''
     #Memcached
     - install_memcached: no
     - memcached_listen: 127.0.0.1
@@ -70,22 +70,28 @@
     - memcached_max_connections: 1024
     #Backup
     - backup: no
-    - aws_access_key_id_for_backups: 
-    - aws_secret_access_key_for_backups: 
-    - aws_backup_tag:
-    - ec2_region_endpoint: 
+    - aws_access_key_id_for_backups: ''
+    - aws_secret_access_key_for_backups: '' 
+    - aws_backup_tag: ''
+    - ec2_region_endpoint: '' 
+    #Mongo
+    - mongo_db_name: ''
+    - mongo_db_user: ''
+    - mongo_db_group: ''
+    - mongo_db_password: ''
+    - mongo_db_host: ''
+    - mongodb_package: ''
 
   #vars_files:
-  #  - group_vars/dbservers
-  #  - group_vars/webservers
-  #  - group_vars/memcachedservers
-  #  - group_vars/nodeservers
-  #  - group_vars/backup
+  #  - vars/local
+  #  - vars/dev
+  #  - vars/production
 
   roles:
+    - base
     - db
     - web
-    #- { role: backup, when: backup }
-    #- { role: rds, when: create_rds }
-    #- { role: nodejs, when: install_node }
-    #- { role: memcached, when: install_memcached }
+    - { role: backup, when: backup }
+    - { role: rds, when: create_rds }
+    - { role: nodejs, when: install_node }
+    - { role: memcached, when: install_memcached }

@@ -38,3 +38,5 @@
 - name: Install boto
   pip: name=boto
   tags: packages
+
+- include: create_users_and_groups.yml

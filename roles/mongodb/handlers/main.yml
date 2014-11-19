@@ -1,0 +1,7 @@
+---
+
+- name: Start mongod
+  service: name={{ mongodb_service }} state=started
+
+- name: Restart mongod
+  service: name={{ mongodb_service }} state=restarted

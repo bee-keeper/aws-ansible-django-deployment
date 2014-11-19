@@ -1,0 +1,37 @@
+---
+
+- include: reddis.yml
+
+- name: Create log directory for celery
+  file: path={{ application_log_dir }}/celery
+    owner={{ application_user }}
+    group={{ application_group }}
+    mode=0700
+    state=directory
+  tags: celery
+
+- name: Create supervisor job for celery
+  template: src=supervisor_celery.conf.j2 dest="/etc/supervisor/conf.d/{{ application_name }}-celery.conf" mode=644
+  tags: celery
+
+- name: Initialise log rotation for Celery logs
+  template: src=celery_log.j2
+    dest='/etc/logrotate.d/{{ application_name }}-celery.log'
+    owner={{ application_user }}
+    group={{ application_group }}
+    mode=0644
+  tags: celery
+
+- name: Copy celery startup script to bin
+  template: src=init_celery.j2
+    dest='{{ virtualenv_path }}/bin/start_celery'
+    owner={{ application_user }}
+    group={{ application_group }}
+    mode=0700
+  tags: celery
+
+- name: Re-read the Supervisor config files
+  command: supervisorctl reread
+  notify: restart {{ application_name }}-celery
+
+

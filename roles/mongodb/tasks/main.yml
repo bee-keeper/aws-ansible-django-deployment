@@ -1,0 +1,34 @@
+---
+
+# http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
+
+- name: Import the public key used by the package management system
+  apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=7F0CEB10 state=present
+  tags: mongodb
+
+- name: Create a list file for MongoDB
+  apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' state=present
+  tags: mongodb
+
+- name: Install Mongodb
+  apt: name=mongodb-{{ mongodb_package }} update_cache={{ update_apt_cache }} state=present
+  notify: Restart mongod
+  tags: mongodb
+
+# Configure user/group
+- name: Setup group
+  user: name={{ mongo_db_group }} state=present system=yes
+  tags: mongodb
+
+- name: Setup user
+  user: name={{ mongo_db_user }} group={{ mongo_db_group }} createhome=no shell="/bin/false" comment="MongoDB Server" state=present
+  tags: mongodb
+
+- name: Install Pymongo globally
+  pip: name=pymongo
+  tags: mongodb
+
+- name: Create the user for mongodb
+  mongodb_user: database={{ mongo_db_name }} name={{ mongo_db_user }} password='{{ mongo_db_password }}' state=present
+  notify: Restart mongod
+  tags: mongodb 

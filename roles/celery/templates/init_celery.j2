@@ -1,0 +1,4 @@
+#!/bin/bash
+source {{ virtualenv_path }}/bin/activate
+source {{ virtualenv_path }}/bin/postactivate
+cd {{ django_dir }} && exec {{ virtualenv_path }}/bin/celery --app={{ application_name }}._celery:app worker --loglevel=DEBUG -n {{ application_name }}-worker.%%h
