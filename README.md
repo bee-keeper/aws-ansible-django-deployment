@@ -16,36 +16,37 @@ The workflow is as so:
   * [Virtualenv](http://virtualenv.readthedocs.org/en/latest/)
 5. Optionally install nodejs, mongodb or celery with reddis
 
-This stack comes with useful logging for gunicorn, supervisorctl, and nginx, uses lograte for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  Additionally, this playbook includes the ability to deploy multiple apps to the same server.
+This stack comes with useful logging for gunicorn, supervisorctl, and nginx, uses logrotate for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  You can also use this playbook to deploy multiple apps to the same server.
 
 Just a note - this is still under production and could still use some security improvements and other tweaks.
 
 
 ##2 minute quick start 
 
-Start by opening the 'playbook.yml' file and providing values for all the non-commented variables listed under 'vars'.  The application will be deployed and owned by 'application_user'.  You'll need to provide their password hash by running the following command:
+Start by opening the 'playbook.yml' file and providing values for all the non-commented variables listed under `vars`.  The application will be deployed and owned by `application_user`.  You'll need to provide their password hash by running the following command:
 
 `python -c "from passlib.hash import sha512_crypt; print sha512_crypt.encrypt('your-password')"`
 
-Later if you log into the server, you can easily change to this user with `su - [application_user]`
+Later if you log into the server, you can easily change to this user with `su - [application_user]`.  When you do this you'll notice the venv is auto-activated and you are automatically in your web app directory.
 
-Finally, open your the 'hosts' file and append your server IP underneath '[webservers].  
+Finally, open your the `hosts` file and append your server IP underneath `[webservers]`.
 
-You should now be ready to run the playbook against your server with the following command:
+Now, run the playbook against your server with the following command:
 
 `ansible-playbook playbook.yml -i hosts --private-key=/Path/to/AWS/key/your.pem`
 
-Should any task fail, you can make corrections and run from that task with this command:
+Should any task fail, you can make corrections and run again from that task:
 
 `ansible-playbook playbook.yml -i hosts  --start-at-task='my task name'`
 
 
 #Assumptions
 
-This project assumes you have a live_settings.py in additon to a settings.py and that your 'application_name' variable is named the same as your Django project.  You'll also need to edit your wsgi.py file to point to live_settings.py rather than the default settings.py.
+This project assumes you have a `live_settings.py` in additon to a `settings.py` and that your `application_name` variable is named the same as your Django project.  You'll also need to edit your `wsgi.py` file to point to `live_settings.py` rather than the default `settings.py`.
 
 Finally, it's assumed your project is set up as follows:
 
+```
 ./media
 ./static
 ./requirements.txt
@@ -58,8 +59,9 @@ Finally, it's assumed your project is set up as follows:
 			live_settings.py		
 			wsgi.py
 			...
+```
 
-Other variations are of course possible but you'll have to change the 'virtualenv_path', 'git_root', and 'django_dir' variables accordingly.
+Other variations are of course possible but you'll have to change the `virtualenv_path`, `git_root`, and `django_dir` variables accordingly.
 
 ##SSH agent forwarding and cloning your Git repository
 
