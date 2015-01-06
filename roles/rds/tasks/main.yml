@@ -19,12 +19,10 @@
       size="{{ rds_size }}"
       wait=yes
       wait_timeout=600
-  when: create_rds    
   register: rds_info
   tags: rds
 
 - name: Checking RDS endpoint status
-  when: create_rds
   debug: msg="Endpoint:{{rds_info.instance.endpoint}}"
   tags: rds
 

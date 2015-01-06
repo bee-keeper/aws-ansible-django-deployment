@@ -5,11 +5,8 @@ export DB_NAME='{{ db_name }}'
 export DB_USER='{{ db_user }}'
 export DB_PASSWORD='{{ db_password }}'
 export DJANGO_SETTINGS_MODULE='{{ django_settings_file }}'
-
-{% if db_host != '' %}
-export DB_HOST='{{ db_host }}'
-{% elif create_rds %}
+{% if rds_info is defined %}
 export DB_HOST='{{ rds_info.instance.endpoint }}'
 {% else %} 
-export DB_HOST=''
+export DB_HOST='{{ db_host | default("", true) }}'
 {% endif %}

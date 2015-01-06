@@ -1,0 +1,24 @@
+---
+
+- name: Install Mysql package
+  apt: name={{ item }} state=installed update_cache={{ update_apt_cache }}
+  with_items:
+   - python-dev
+   - libmysqlclient-dev
+   - mysql-server
+   - libapache2-mod-auth-mysql
+   - python-mysqldb
+
+- name: Create Mysql configuration file
+  template: src=my.cnf.j2 dest=/etc/my.cnf
+  notify: 
+  - restart mysql
+
+- name: Start Mysql Service
+  service: name=mysql state=started enabled=true
+
+- name: Create Mysql Database
+  mysql_db: name={{ mysql_db_name }} state=present
+
+- name: Create Mysql DB User
+  mysql_user: name={{ mysql_db_user }} password={{ mysql_db_password }} priv=*.*:ALL host='%' state=present
