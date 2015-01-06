@@ -18,18 +18,18 @@ The workflow is as follows:
 
 This stack comes with useful logging for gunicorn, supervisord, and nginx.  It uses logrotate for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  You can also use this playbook to deploy multiple apps to the same server.
 
-`*** Just a note - this is still under production and could still benefit from some security improvements and other tweaks.  It's highly advised you use your AWS security settings to block all uneeded ports ***`
+`*** Just a note - this is still under production and could still benefit from some security improvements and other tweaks.  It's highly advised you use your AWS security settings to block all unneeded ports ***`
 
 
 ##2 minute quick start 
 
-Start by opening the 'playbook.yml' file and providing values for all the non-commented variables listed under `vars`.  The application will be deployed and owned by `application_user`.  You'll need to provide their password hash by running the following command:
+Start by opening the `playbook.yml` file and providing values for all the non-commented variables listed under `vars`.  The application will be deployed and owned by `application_user`.  You'll need to provide their password hash by running the following command:
 
 `python -c "from passlib.hash import sha512_crypt; print sha512_crypt.encrypt('your-password')"`
 
 Later if you log into the server, you can easily change to this user with `su - [application_user]`.  When you do this you'll notice the venv is auto-activated and you are automatically in your web app directory.
 
-Finally, open your the `hosts` file and append your server IP underneath `[webservers]`.
+Finally, open the `hosts` file and append your server IP underneath `[webservers]`.
 
 Now, run the playbook against your server with the following command:
 
