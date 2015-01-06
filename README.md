@@ -9,39 +9,59 @@ The workflow is as so:
 
 1. Spin an EC2 Ubuntu server via AWS or [Vagrant](http://www.vagrantup.com/) - a sample Vagrant file is included
 2. Provison the server using [Ansible](http://www.ansible.com/home)
-3. Optionally create a RDS instance or configure a Postgres db on the server
+3. Choose either RDS from Amazon, PostgreSQL or MYSQL database
 4. Deploy your Django project from Git and serve it with this stack:
   * [Gunicorn](http://gunicorn.org/)
   * [Nginx](http://nginx.org/)
   * [Supervisord](http://supervisord.org/)
   * [Memcached](http://memcached.org/)
   * [Virtualenv](http://virtualenv.readthedocs.org/en/latest/)
-5. Configure logging (uses logroate)
-6. Configure backups (uses [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool))
+5. Optionally install nodejs, mongodb and celery with reddis
+
+This stack comes with useful logging for gunicorn, supervisorctl, and nginx, uses lograte for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  Additionally, this playbook includes the ability to deploy multiple apps to the same server.
+
+Just a note - this is still under production and could still use some security improvements and other tweaks.
 
 
-Just a note - this is still under production and could still use some security improvements and other tweaks.    
+##2 minute quick start 
 
-
-##Project configuration
-
-Start by opening the 'playbook.yml' file and providing values for all the variables listed under 'vars'.  The application will be deployed and owned by 'application_user'.  You'll need to provide their password hash by running the following command:
+Start by opening the 'playbook.yml' file and providing values for all the non-commented variables listed under 'vars'.  The application will be deployed and owned by 'application_user'.  You'll need to provide their password hash by running the following command:
 
 `python -c "from passlib.hash import sha512_crypt; print sha512_crypt.encrypt('your-password')"`
 
 Later if you log into the server, you can easily change to this user with `su - [application_user]`
 
+Finally, open your the 'hosts' file and append your server IP underneath '[webservers].  
 
-##5 minute start without Vagrant or extensive AWS variables
+You should now be ready to run the playbook against your server with the following command:
 
-Add your server IP to the inventory/hosts file underneath [webserver] and simply run:
+`ansible-playbook playbook.yml -i hosts --private-key=/Path/to/AWS/key/your.pem`
 
-`ansible-playbook build/playbook.yml -i build/inventory/hosts`
+Should any task fail, you can make corrections and run from that task with this command:
 
-If you haven't set the path to the pem in ansible.cfg, you can instead simply pass it in using '--ansible-private-keyfile'
+`ansible-playbook playbook.yml -i hosts  --start-at-task='my task name'`
 
-This project assumes you have a live_settings.py in additon to a settings.py and that your 'application_name' variable is named the same as your Django project.
 
+#Assumptions
+
+This project assumes you have a live_settings.py in additon to a settings.py and that your 'application_name' variable is named the same as your Django project.  You'll also need to edit your wsgi.py file to point to live_settings.py rather than the default settings.py.
+
+Finally, it's assumed your project is set up as follows:
+
+./media
+./static
+./requirements.txt
+./application_name
+		./app1
+		./app2
+		manage.py
+		./application_name
+			settings.py
+			live_settings.py		
+			wsgi.py
+			...
+
+Other variations are of course possible but you'll have to change the 'virtualenv_path', 'git_root', and 'django_dir' variables accordingly.
 
 ##SSH agent forwarding and cloning your Git repository
 
@@ -50,7 +70,7 @@ You might have some issues with Ansible timing out or giving a public key denied
 
 ##Variable management and Ansible Vault
 
-Ansible Vault allows you to easily encrypt .yml files which you'll want to commit version control.  The group_vars directory is a good place to organise your encrypted variable files.
+Ansible Vault allows you to easily encrypt .yml files which you'll want to commit version control.  The vars directory is a good place to organise your encrypted variable files.
 
 `ansible-vault encrypt foo.yml bar.yml baz.yml #to encrypt existing files`
 
@@ -104,12 +124,6 @@ And finally clean up with:
 
 Should Vagrant fail to complete your provisioning, you can always just run Ansible picking up from where you left off.  
 
-`ansible-playbook build/playbook.yml -i build/inventory/hosts  --start-at-task='my task'`
-
-To do this you'll need a valid host IP in your inventory and also be sure to run ansible-playbook from the same directory as where 'ansible.cfg' is located.  Alternatively you can move this file to a system directory where Ansible expects it to be.
 
 ##To do
 Dynamic inventories, Development, Staging, Live setups, Better lockdown etc 
-
-
-
