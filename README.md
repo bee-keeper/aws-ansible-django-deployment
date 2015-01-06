@@ -5,7 +5,7 @@ I've put this repository together with the intention that it can be used as a te
 
 The workflow is as follows:
 
-1. Spin an EC2 Ubuntu server via AWS or [Vagrant](http://www.vagrantup.com/) - a sample Vagrant file is included
+1. Spin up an EC2 Ubuntu server via AWS or [Vagrant](http://www.vagrantup.com/) - a sample Vagrant file is included
 2. Provison the server using [Ansible](http://www.ansible.com/home)
 3. Choose either RDS from Amazon, PostgreSQL or MYSQL database
 4. Deploy your Django project from Git and serve it with this stack:
@@ -18,7 +18,7 @@ The workflow is as follows:
 
 This stack comes with useful logging for gunicorn, supervisord, and nginx.  It uses logrotate for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  You can also use this playbook to deploy multiple apps to the same server.
 
-*** Just a note - this is still under production and could still benefit from some security improvements and other tweaks.  It's highly advised you use your AWS security settings to block all uneeded ports ***
+`*** Just a note - this is still under production and could still benefit from some security improvements and other tweaks.  It's highly advised you use your AWS security settings to block all uneeded ports ***`
 
 
 ##2 minute quick start 
@@ -74,6 +74,7 @@ Finally, it's assumed your project is set up as follows:
 
 Other variations are of course possible but you'll have to change the `virtualenv_path`, `git_root`, and `django_dir` variables accordingly.
 
+
 ##SSH agent forwarding and cloning your Git repository
 
 You might have some issues with Ansible timing out or giving a public key denied errors when trying to connect to your private repository.  [This guide](https://help.github.com/articles/using-ssh-agent-forwarding) is pretty useful for troubleshooting these errors.
@@ -101,16 +102,9 @@ Use tags to run a bespoke collection of tasks on your hosts
 `ansible-playbook build/playbook.yml -i build/inventory/hosts  --tags='deploy'`
 
 
-##Vagrant
-Once you've configured your enviroment and Ansible variables you'll be able to both spin up and provision by simply typing:
-
-`vagrant up --provider=aws`
-
-Thereafter, you'll be able to make ongoing deployments and updates using Ansible.
-
 ##AWS credentials
 
-First of all you'll need to get the following details from your AWS account:
+If you want to use Vagrant to spin up your AWS servers you'll need to get the following details from your AWS account.
 
   * ACCESS_KEY_ID
   * SECRET_ACCESS_KEY
@@ -136,8 +130,17 @@ And finally clean up with:
 Should Vagrant fail to complete your provisioning, you can always just run Ansible picking up from where you left off.  
 
 
+##Vagrant
+Once you've configured your enviroment and Ansible variables and you've followed the step above you'll be able to both spin up and provision by simply typing:
+
+`vagrant up --provider=aws`
+
+Thereafter, you'll be able to make ongoing deployments and updates using Ansible.
+
+
 ##To do
 Dynamic inventories, Development, Staging, Live setups, Better lockdown etc 
+
 
 ##Credits
 I've mainly borrowed from or been influenced by this [repo](https://github.com/jcalazan/ansible-django-stack) which was inspired by this excellent [blogpost](http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/).
