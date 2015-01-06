@@ -3,7 +3,7 @@ Deploying Django on AWS (Ubuntu)
 
 I've put this repository together with the intention that it can be used as a teach yourself tutorial for deploying Django with Ansible.  Have fun deploying and please feel free to contribute if you think it can be improved.
 
-The workflow is as so:
+The workflow is as follows:
 
 1. Spin an EC2 Ubuntu server via AWS or [Vagrant](http://www.vagrantup.com/) - a sample Vagrant file is included
 2. Provison the server using [Ansible](http://www.ansible.com/home)
@@ -16,9 +16,9 @@ The workflow is as so:
   * [Virtualenv](http://virtualenv.readthedocs.org/en/latest/)
 5. Optionally install nodejs, mongodb or celery with reddis
 
-This stack comes with useful logging for gunicorn, supervisorctl, and nginx, uses logrotate for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  You can also use this playbook to deploy multiple apps to the same server.
+This stack comes with useful logging for gunicorn, supervisord, and nginx.  It uses logrotate for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  You can also use this playbook to deploy multiple apps to the same server.
 
-Just a note - this is still under production and could still use some security improvements and other tweaks.
+*** Just a note - this is still under production and could still benefit from some security improvements and other tweaks.  It's highly advised you use your AWS security settings to block all uneeded ports ***
 
 
 ##2 minute quick start 
@@ -38,6 +38,17 @@ Now, run the playbook against your server with the following command:
 Should any task fail, you can make corrections and run again from that task:
 
 `ansible-playbook playbook.yml -i hosts  --start-at-task='my task name'`
+
+
+##Some useful server commands
+
+Restart your app:
+
+`sudo supervisorctl restart application_name`
+
+Restart nginx, postgres, etc
+
+`sudo service restart nginx`
 
 
 #Assumptions
