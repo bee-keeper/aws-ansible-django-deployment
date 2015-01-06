@@ -3,8 +3,6 @@ Deploying Django on AWS (Ubuntu)
 
 I've put this repository together with the intention that it can be used as a teach yourself tutorial for deploying Django with Ansible.  Have fun deploying and please feel free to contribute if you think it can be improved.
 
-I've mainly borrowed from or been influenced by this [repo](https://github.com/jcalazan/ansible-django-stack) which was inspired by this excellent [blogpost](http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/).
-
 The workflow is as so:
 
 1. Spin an EC2 Ubuntu server via AWS or [Vagrant](http://www.vagrantup.com/) - a sample Vagrant file is included
@@ -16,7 +14,7 @@ The workflow is as so:
   * [Supervisord](http://supervisord.org/)
   * [Memcached](http://memcached.org/)
   * [Virtualenv](http://virtualenv.readthedocs.org/en/latest/)
-5. Optionally install nodejs, mongodb and celery with reddis
+5. Optionally install nodejs, mongodb or celery with reddis
 
 This stack comes with useful logging for gunicorn, supervisorctl, and nginx, uses lograte for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  Additionally, this playbook includes the ability to deploy multiple apps to the same server.
 
@@ -127,3 +125,6 @@ Should Vagrant fail to complete your provisioning, you can always just run Ansib
 
 ##To do
 Dynamic inventories, Development, Staging, Live setups, Better lockdown etc 
+
+##Credits
+I've mainly borrowed from or been influenced by this [repo](https://github.com/jcalazan/ansible-django-stack) which was inspired by this excellent [blogpost](http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/).
