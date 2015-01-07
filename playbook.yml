@@ -36,7 +36,7 @@
     - django_settings_file: '{{ application_name }}.live_settings'
     - django_secret_key: ''
     - run_django_syncdb: yes
-    - run_django_south_migration: yes
+    - run_django_migrations: yes
     - run_django_collectstatic: yes
     #(Web) Git
     - setup_git_repo: yes

@@ -40,22 +40,11 @@ Should any task fail, you can make corrections and run again from that task:
 `ansible-playbook playbook.yml -i hosts  --start-at-task='my task name'`
 
 
-##Some useful server commands
-
-Restart your app:
-
-`sudo supervisorctl restart application_name`
-
-Restart nginx, postgres, etc
-
-`sudo service restart nginx`
-
-
 #Assumptions
 
 This project assumes you have a `live_settings.py` in additon to a `settings.py` and that your `application_name` variable is named the same as your Django project.  You'll also need to edit your `wsgi.py` file to point to `live_settings.py` rather than the default `settings.py`.
 
-Finally, it's assumed your project is set up as follows:
+It's also assumed your project is set up as below.  Other variations are of course possible but you'll have to change the `virtualenv_path`, `git_root`, and `django_dir` variables accordingly.
 
 ```
 ./media
@@ -72,7 +61,28 @@ Finally, it's assumed your project is set up as follows:
 			...
 ```
 
-Other variations are of course possible but you'll have to change the `virtualenv_path`, `git_root`, and `django_dir` variables accordingly.
+Finally, all sensitive settings are enviroment variables which are exported via the postactivate script (in roles/web/templates).  The example below, from [2 scoops of Django](http://twoscoopspress.org/products/two-scoops-of-django-1-6) is a nice example of how you can configure your local/testing/live settings files.
+
+```
+def get_env_variable(var_name):
+  """ Get the environment variable or return exception """
+  try:
+    return os.environ[var_name]
+  except KeyError:
+    error_msg = "Set the %s environment variable" % var_name
+    raise ImproperlyConfigured(error_msg)
+
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': get_env_variable('DB_NAME'),
+    'USER': get_env_variable('DB_USER'),
+    'PASSWORD': get_env_variable('DB_PASSWORD'),
+    'HOST': get_env_variable('DB_HOST'), # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+    'PORT': '', # Set to empty string for default.
+},
+SECRET_KEY = get_env_variable('DJANGO_SECRET_KEY')
+```
 
 
 ##SSH agent forwarding and cloning your Git repository
@@ -100,6 +110,14 @@ To run a playbook with encrypted files:
 Use tags to run a bespoke collection of tasks on your hosts
 
 `ansible-playbook build/playbook.yml -i build/inventory/hosts  --tags='deploy'`
+
+Some useful server commands:
+
+`sudo supervisorctl restart application_name`
+
+Restart nginx, postgres, etc
+
+`sudo service restart nginx`
 
 
 ##AWS credentials

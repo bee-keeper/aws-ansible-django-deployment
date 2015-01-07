@@ -16,13 +16,13 @@
     - django 
     - syncdb
 
-- name: Run Django South migrations
+- name: Run Django migrations
   sudo_user: "{{ application_user }}"
   shell: . {{ virtualenv_path }}/bin/activate
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ django_dir }}
          && python manage.py migrate --noinput --settings={{ django_settings_file }}
-  when: run_django_south_migration
+  when: run_django_migrations
   tags: 
     - django 
     - migrate
