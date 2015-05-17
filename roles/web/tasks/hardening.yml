@@ -1,0 +1,21 @@
+# work in progress..
+
+- name: Remove CBC ciphers
+  lineinfile:
+    dest="/etc/ssh/sshd_config"
+    line="Ciphers aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,arcfour"
+    state=present
+    insertafter=EOF
+  tags: hardening
+
+- name: Disable MD5 and 96-bit MAC algorithms
+  lineinfile:
+    dest="/etc/ssh/sshd_config"
+    line="MACs hmac-sha1,hmac-ripemd160"
+    state=present
+    insertafter=EOF
+  tags: hardening
+
+- name: Restart SSHD
+  service: name=ssh state=restarted enabled=yes
+  tags: hardening

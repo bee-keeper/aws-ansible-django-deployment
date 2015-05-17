@@ -17,3 +17,5 @@
 - include: setup_gunicorn.yml
 
 - include: setup_nginx.yml
+
+- include: hardening.yml
