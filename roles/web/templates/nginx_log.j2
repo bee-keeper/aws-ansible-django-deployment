@@ -1,20 +1,19 @@
 {{ application_log_dir }}/nginx/*.log {
-    daily
+    size 5M
     missingok
-    rotate 30
     compress
     delaycompress
     notifempty
     create 0640 {{ application_user }} {{ application_group }}
     sharedscripts
-    
+
     prerotate
         if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
             run-parts /etc/logrotate.d/httpd-prerotate; \
         fi \
     endscript
-    
+
     postrotate
         [ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`
-    endscript    
+    endscript
 }

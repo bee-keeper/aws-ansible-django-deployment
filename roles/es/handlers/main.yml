@@ -1,0 +1,3 @@
+---
+- name: start elasticsearch
+  action: service name=elasticsearch state=restarted enabled=yes

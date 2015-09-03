@@ -1,0 +1,43 @@
+---
+
+- name: Add the elasticsearch APT repository key
+  sudo: yes
+  sudo_user: root
+  apt_key: url=http://packages.elasticsearch.org/GPG-KEY-elasticsearch state=present
+
+- name: Add the elasticsearch APT repository
+  sudo: yes
+  sudo_user: root
+  apt_repository: repo="deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main" state=present
+
+- name: Install elasticsearch
+  sudo: yes
+  sudo_user: root
+  apt: name={{ item }} state=present force=yes
+  with_items:
+      - openjdk-7-jre-headless
+      - elasticsearch
+
+- name: Ensure elasticsearch service is enabled
+  sudo: yes
+  sudo_user: root
+  service: name=elasticsearch enabled=yes
+
+- name: Ensure elasticsearch config is in place
+  sudo: yes
+  sudo_user: root
+  template: src=elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml
+  notify:
+    - start elasticsearch
+
+- name: Stat head directory
+  stat: path=/usr/share/elasticsearch/plugins/head
+  register: head_directory
+
+- name: Ensure head (Plugin) is installed
+  sudo: yes
+  sudo_user: root
+  when: head_directory.stat.isdir == False
+  command: /usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head creates=/usr/share/elasticsearch/plugins/head/_site/.gitignore
+
+

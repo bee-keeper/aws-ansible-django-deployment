@@ -79,11 +79,11 @@
     #- memcached_max_connections: 1024
     #Backup (rudimentary)
     #- aws_access_key_id_for_backups: ''
-    #- aws_secret_access_key_for_backups: '' 
+    #- aws_secret_access_key_for_backups: ''
     #- aws_backup_tag: ''
     #- ec2_region_endpoint: ''
 
-  #Good practice if you want to move vars from here.. 
+  #Good practice if you want to move vars from here..
   #vars_files:
   #  - vars/local
   #  - vars/dev
@@ -99,3 +99,4 @@
     #- nodejs
     #- celery
     #- mongo
+    #- es

@@ -14,14 +14,14 @@ The workflow is as follows:
   * [Supervisord](http://supervisord.org/)
   * [Memcached](http://memcached.org/)
   * [Virtualenv](http://virtualenv.readthedocs.org/en/latest/)
-5. Optionally install nodejs, mongodb or celery with reddis
+5. Optionally install nodejs, mongodb, elastic search or celery with reddis
 
 This stack comes with useful logging for gunicorn, supervisord, and nginx.  It uses logrotate for managing logs and [aws-snapshot-tool](https://github.com/evannuil/aws-snapshot-tool) for rudimentary (full server image) backups.  You can also use this playbook to deploy multiple apps to the same server.
 
-`*** Just a note - this is still under production and could still benefit from some security improvements and other tweaks.  It's highly advised you use your AWS security settings to block all unneeded ports ***`
+`*** You probably don't want to use this for live use, it's more about providing a quick dev enviroment for common stack components ***`
 
 
-##2 minute quick start 
+##2 minute quick start
 
 Start by opening the `playbook.yml` file and providing values for all the non-commented variables listed under `vars`.  The application will be deployed and owned by `application_user`.  You'll need to provide their password hash by running the following command:
 
@@ -56,7 +56,7 @@ It's also assumed your project is set up as below.  Other variations are of cour
 		manage.py
 		./application_name
 			settings.py
-			live_settings.py		
+			live_settings.py
 			wsgi.py
 			...
 ```
@@ -136,7 +136,7 @@ At this stage you should be able to create an EC2 instance via Vagrant.
 To verify, source your variables in the 'envs' file and run the following:
 
 `vagrant up --provider=aws`
-    
+
 `vagrant ssh` to take a look around, then `exit` to leave
 
 Back on your host you can checkout your server details with:
@@ -145,7 +145,7 @@ Back on your host you can checkout your server details with:
 And finally clean up with:
     `vagrant destroy`
 
-Should Vagrant fail to complete your provisioning, you can always just run Ansible picking up from where you left off.  
+Should Vagrant fail to complete your provisioning, you can always just run Ansible picking up from where you left off.
 
 
 ##Vagrant
@@ -157,7 +157,7 @@ Thereafter, you'll be able to make ongoing deployments and updates using Ansible
 
 
 ##To do
-Dynamic inventories, Development, Staging, Live setups, Better lockdown etc 
+Dynamic inventories, Development, Staging, Live setups, Better lockdown etc
 
 
 ##Credits
